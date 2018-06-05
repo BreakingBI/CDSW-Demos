@@ -12,6 +12,11 @@
 # # http://archive.ics.uci.edu/ml/datasets/Bank+Marketing
 #
 # # You can find this demo at https://github.com/BreakingBI/CDSW-Demos
+#
+# # Initial Steps:
+# # From the command line:
+# # pip3 install sklearn
+# # conda install graphviz
 # 
 # 
 # # Agenda
