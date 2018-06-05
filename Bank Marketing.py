@@ -10,6 +10,8 @@
 # 
 # # By the end of this workshop, you should be comfortable using Python to perform basic data science tasks in CDSW.  If you would like to expand your skills further, Cloudera provides a number of interesting projects, complete with code, at this location:
 # # http://archive.ics.uci.edu/ml/datasets/Bank+Marketing
+#
+# # You can find this demo at https://github.com/BreakingBI/CDSW-Demos
 # 
 # 
 # # Agenda
