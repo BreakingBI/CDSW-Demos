@@ -54,11 +54,13 @@ df = pd.read_csv('bank-additional-full.csv', low_memory=False)
 
 import numpy as np
 import math
-df = df[['age', 'job', 'marital', 'education', 'default', 'housing', 'duration','y']]
+df = df[['age', 'job', 'marital', 'education', 'default', 'housing','y']]
 df = df.rename(columns={'housing':'housing_loan', 'y':'auto_loan'})
 df.marital = df.marital.replace('unknown', np.NaN)
 df.loc[df.sample(math.ceil(df.marital.size / 10)).index, ['marital']] = np.NaN
-df.loc[df.sample(math.ceil(df.auto_loan.size /5)).index, ['auto_loan']] = 'yes'
+df['credit'] = 1
+df.loc[df.auto_loan == 'yes', ['credit']] = 700 + np.random.randint(low=-150, high=150, size=df.credit.size)
+df.loc[df.auto_loan == 'no', ['credit']] = 600 + np.random.randint(low=-150, high=150, size=df.credit.size)
 
 # Single Variable Visualizations
 
