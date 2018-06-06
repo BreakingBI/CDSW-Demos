@@ -15,7 +15,6 @@
 #
 # # Initial Steps:
 # # From the command line:
-# # pip3 install sklearn
 # # conda install graphviz
 # 
 # 
@@ -40,7 +39,7 @@
 # education (categorical: basic.4y','basic.6y','basic.9y','high.school','illiterate','professional.course','university.degree','unknown')
 # default: has credit in default? (categorical: 'no','yes','unknown')
 # housing_loan: has housing loan? (categorical: 'no','yes','unknown')
-# duration: last contact duration, in seconds (numeric). Important note: this attribute highly affects the output target (e.g., if duration=0 then y='no'). Yet, the duration is not known before a call is performed. Also, after the end of the call y is obviously known. Thus, this input should only be included for benchmark purposes and should be discarded if the intention is to have a realistic predictive model.
+# credit: credit score (numeric)
 # auto_loan: will apply for housing loan? (categorical: 'no','yes')
 
 # # Workshop
@@ -49,6 +48,9 @@
 
 import pandas as pd
 df = pd.read_csv('bank-additional-full.csv', low_memory=False)
+
+import s3fs
+df = pd.read_csv('s3://awstestdrive/bank-additional-full.csv')
 
 # Make Modifications
 
@@ -94,7 +96,7 @@ df.education.value_counts().index
 
 _ = sns.countplot(y='education', hue='auto_loan', data=df, order=df.education.value_counts().index)
 
-_ = sns.regplot(x='age', y='duration', data=df)
+_ = sns.regplot(x='age', y='credit', data=df)
 
 _ = sns.pairplot(hue='auto_loan', data=df, kind='reg')
 
@@ -191,6 +193,7 @@ X.shape
 y = df_dummy.auto_loan_yes
 y.shape
 
+!pip3 install sklearn
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=4)
 
@@ -203,6 +206,8 @@ from sklearn import tree
 dtree_clf = tree.DecisionTreeClassifier(max_leaf_nodes=3)
 
 _ = dtree_clf.fit(X_train, y_train)
+
+# Install from terminal: conda install graphviz
 
 import graphviz
 dtree_export = tree.export_graphviz(dtree_clf, out_file=None) 
@@ -229,6 +234,9 @@ _ = rf_clf.fit(X_train, y_train)
 rf_pred = rf_clf.predict(X_test)
 rf_acc = accuracy_score(y_test, rf_pred)
 
+dtree_acc
+rf_acc
+
 gb_clf = ensemble.GradientBoostingClassifier()
 _ = gb_clf.fit(X_train, y_train)
 gb_pred = gb_clf.predict(X_test)
@@ -237,35 +245,3 @@ gb_acc = accuracy_score(y_test, gb_pred)
 dtree_acc
 rf_acc
 gb_acc
-
-
-
-# #Extras
-
-# Lift Chart
-from matplotlib import pyplot as plt
-def plotLiftChart(actual, predicted):
-    df_dict = {'actual': list (y_test), 'pred': list(gb_pred)}
-    df_chart = pd.DataFrame(df_dict)
-    pred_ranks = pd.qcut(df_chart['pred'].rank(method='first'), 100, labels=False)
-    actual_ranks = pd.qcut(df_chart['actual'].rank(method='first'), 100, labels=False)
-    pred_percentiles = df_chart.groupby(pred_ranks).mean()
-    actual_percentiles = df_chart.groupby(actual_ranks).mean()
-    plt.title('Lift Chart')
-    plt.plot(np.arange(.01, 1.01, .01), np.array(pred_percentiles['pred']),
-             color='darkorange', lw=2, label='Prediction')
-    plt.plot(np.arange(.01, 1.01, .01), np.array(pred_percentiles['actual']),
-             color='navy', lw=2, linestyle='--', label='Actual')
-    plt.ylabel('Target Percentile')
-    plt.xlabel('Population Percentile')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([-0.05, 1.05])
-    plt.legend(loc="best")
-
-plotLiftChart(y_test, gb_pred)
-
-# Other Evalution Metrics
-from sklearn.metrics import classification_report
-print(classification_report(y_test, dtree_pred))
-print(classification_report(y_test, rf_pred))
-print(classification_report(y_test, gb_pred))
