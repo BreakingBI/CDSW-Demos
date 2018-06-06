@@ -12,10 +12,6 @@
 # # http://archive.ics.uci.edu/ml/datasets/Bank+Marketing
 #
 # # You can find this demo at https://github.com/BreakingBI/CDSW-Demos
-#
-# # Initial Steps:
-# # From the command line:
-# # conda install graphviz
 # 
 # 
 # # Agenda
@@ -49,6 +45,7 @@
 import pandas as pd
 df = pd.read_csv('bank-additional-full.csv', low_memory=False)
 
+!pip3 install s3fs
 import s3fs
 df = pd.read_csv('s3://awstestdrive/bank-additional-full.csv')
 
