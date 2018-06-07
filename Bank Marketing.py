@@ -122,7 +122,7 @@ df.marital.mode()
 
 df.marital.mode()[0]
 
-df.marital.fillna(value=df.marital.mode()[0]).valuecount(*)
+df.marital.fillna(value=df.marital.mode()[0]).value_counts()
 
 df.marital.fillna(value='unknown', inplace=True)
 
