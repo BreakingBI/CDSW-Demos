@@ -43,10 +43,12 @@
 # Import the Dataset
 
 import pandas as pd
+
 df = pd.read_csv('bank-additional-full.csv', low_memory=False)
 
 !pip3 install s3fs
 import s3fs
+
 df = pd.read_csv('s3://awstestdrive/bank-additional-full.csv')
 
 # Make Modifications
@@ -66,7 +68,7 @@ df.loc[df.auto_loan == 'no', ['credit']] = 600 + np.random.randint(low=-150, hig
 import seaborn as sns
 sns.countplot(y='auto_loan', data=df)
 
-_ = sns.countplot(df.auto_loan)
+_ = sns.countplot(y='auto_loan', data=df)
 
 _ = sns.countplot(y='marital', data=df)
 _ = sns.countplot(y='housing_loan', data=df)
@@ -95,9 +97,8 @@ _ = sns.countplot(y='education', hue='auto_loan', data=df, order=df.education.va
 
 _ = sns.regplot(x='age', y='credit', data=df)
 
+#This command takes a second to run
 _ = sns.pairplot(hue='auto_loan', data=df, kind='reg')
-
-_ = sns.pairplot(hue='auto_loan', data=df, kind='reg', size=7)     #This takes a few seconds to run
 
 df.corr()
 
@@ -115,11 +116,13 @@ df.marital.value_counts()
 
 df.marital.fillna(value='unknown')
 
+df.marital.fillna(value='unknown').value_counts()
+
 df.marital.mode()
 
 df.marital.mode()[0]
 
-df.marital.fillna(value=df.marital.mode()[0])
+df.marital.fillna(value=df.marital.mode()[0]).valuecount(*)
 
 df.marital.fillna(value='unknown', inplace=True)
 
@@ -143,6 +146,7 @@ job_dummy.columns.str.replace(pat='-', repl='_')
 
 job_dummy.columns = job_dummy.columns.str.replace(pat='-', repl='_')
 job_dummy.columns = job_dummy.columns.str.replace(pat='.', repl='_')
+job_dummy.columns
 
 marital_dummy = pd.get_dummies(df.marital)
 marital_dummy.columns = ['marital_' + col for col in marital_dummy.columns]
@@ -204,7 +208,9 @@ dtree_clf = tree.DecisionTreeClassifier(max_leaf_nodes=3)
 
 _ = dtree_clf.fit(X_train, y_train)
 
-# Install from terminal: conda install graphviz
+# Install from terminal:
+# conda install graphviz
+# pip3 install graphviz
 
 import graphviz
 dtree_export = tree.export_graphviz(dtree_clf, out_file=None) 
